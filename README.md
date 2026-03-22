@@ -1,4 +1,4 @@
-# TTS 语音生成工具
+# SpeakEasy
 
 一个基于 Rust 开发的 TTS（文本转语音）桌面应用程序。
 

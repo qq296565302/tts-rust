@@ -11,12 +11,12 @@ fn main() -> eframe::Result<()> {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([800.0, 600.0])
             .with_min_inner_size([600.0, 400.0])
-            .with_title("TTS语音生成工具"),
+            .with_title("SpeakEasy"),
         ..Default::default()
     };
 
     eframe::run_native(
-        "TTS语音生成工具",
+        "SpeakEasy",
         options,
         Box::new(|cc| {
             setup_light_theme(&cc.egui_ctx);

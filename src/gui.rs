@@ -270,6 +270,7 @@ fn el_text_edit_singleline(value: &mut String, width: f32) -> egui::TextEdit<'_>
     egui::TextEdit::singleline(value)
         .desired_width(width)
         .min_size(egui::vec2(0.0, 32.0))
+        .margin(egui::vec2(8.0, 7.0))
 }
 
 fn el_text_edit_multiline(value: &mut String, rows: usize) -> egui::TextEdit<'_> {
@@ -351,7 +352,7 @@ impl eframe::App for TtsApp {
                     .stroke(egui::Stroke::new(1.0, style::BORDER_COLOR)))
                 .show_inside(ui, |ui| {
                     ui.horizontal(|ui| {
-                        ui.label(egui::RichText::new("TTS 语音生成工具").size(20.0).color(style::TEXT_PRIMARY).strong());
+                        ui.label(egui::RichText::new("SpeakEasy").size(20.0).color(style::TEXT_PRIMARY).strong());
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             if ui.add(el_button_default("设置")).clicked() {
                                 self.show_config = !self.show_config;
