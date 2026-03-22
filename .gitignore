@@ -1,0 +1,7 @@
+/target
+/.env
+Cargo.lock
+*.mp3
+*.wav
+*.ogg
+*.m4a
