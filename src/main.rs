@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod config;
 mod gui;
 mod player;
@@ -7,11 +9,14 @@ use eframe::egui;
 use std::fs;
 
 fn main() -> eframe::Result<()> {
+    let icon = load_icon();
+    
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([800.0, 600.0])
             .with_min_inner_size([600.0, 400.0])
-            .with_title("SpeakEasy"),
+            .with_title("SpeakEasy")
+            .with_icon(icon),
         ..Default::default()
     };
 
@@ -24,6 +29,26 @@ fn main() -> eframe::Result<()> {
             Box::new(gui::TtsApp::new(cc))
         }),
     )
+}
+
+fn load_icon() -> egui::IconData {
+    if let Ok(icon_bytes) = fs::read("icon.ico") {
+        if let Ok(icon) = load_icon_from_bytes(&icon_bytes) {
+            return icon;
+        }
+    }
+    egui::IconData::default()
+}
+
+fn load_icon_from_bytes(bytes: &[u8]) -> Result<egui::IconData, Box<dyn std::error::Error>> {
+    let img = image::load_from_memory(bytes)?;
+    let rgba = img.to_rgba8();
+    let (width, height) = rgba.dimensions();
+    Ok(egui::IconData {
+        rgba: rgba.into_raw(),
+        width,
+        height,
+    })
 }
 
 fn setup_light_theme(ctx: &egui::Context) {

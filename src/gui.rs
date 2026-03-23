@@ -26,6 +26,7 @@ pub struct TtsApp {
     
     show_config: bool,
     batch_mode: bool,
+    first_run: bool,
     
     api_key_input: String,
     api_base_input: String,
@@ -48,6 +49,8 @@ impl TtsApp {
         let model_input = config.model.clone();
         let output_dir_input = config.output_dir.to_string_lossy().to_string();
         
+        let first_run = config.api_key.is_empty();
+        
         let valid_voices = get_available_voices();
         let selected_voice = if valid_voices.contains(&config.default_voice.as_str()) {
             config.default_voice.clone()
@@ -69,6 +72,7 @@ impl TtsApp {
             player: AudioPlayer::new(),
             show_config: false,
             batch_mode: false,
+            first_run,
             api_key_input,
             api_base_input,
             model_input,
@@ -337,6 +341,60 @@ fn el_select<'a>(
 impl eframe::App for TtsApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.check_task_result();
+        
+        if self.first_run {
+            egui::Window::new("欢迎使用 SpeakEasy")
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .min_width(450.0)
+                .show(ctx, |ui| {
+                    ui.add_space(10.0);
+                    ui.label(egui::RichText::new("首次使用，请配置 API 密钥").size(16.0).color(style::TEXT_PRIMARY));
+                    ui.add_space(16.0);
+                    
+                    ui.label(egui::RichText::new("API 密钥:").size(14.0).color(style::TEXT_PRIMARY));
+                    ui.add(egui::TextEdit::singleline(&mut self.api_key_input)
+                        .desired_width(400.0)
+                        .min_size(egui::vec2(0.0, 32.0))
+                        .margin(egui::vec2(8.0, 7.0))
+                        .password(true)
+                        .hint_text("请输入您的 API 密钥"));
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.label(egui::RichText::new("API 端点:").size(14.0).color(style::TEXT_PRIMARY));
+                    ui.add(egui::TextEdit::singleline(&mut self.api_base_input)
+                        .desired_width(400.0)
+                        .min_size(egui::vec2(0.0, 32.0))
+                        .margin(egui::vec2(8.0, 7.0))
+                        .hint_text("https://api.xiaomimimo.com/v1"));
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.label(egui::RichText::new("模型名称:").size(14.0).color(style::TEXT_PRIMARY));
+                    ui.add(egui::TextEdit::singleline(&mut self.model_input)
+                        .desired_width(400.0)
+                        .min_size(egui::vec2(0.0, 32.0))
+                        .margin(egui::vec2(8.0, 7.0))
+                        .hint_text("mimo-v2-tts"));
+                    
+                    ui.add_space(16.0);
+                    
+                    ui.horizontal(|ui| {
+                        if ui.add(el_button_primary("保存并开始使用")).clicked() {
+                            if !self.api_key_input.is_empty() {
+                                self.save_config();
+                                self.first_run = false;
+                            }
+                        }
+                    });
+                    
+                    ui.add_space(8.0);
+                    ui.label(egui::RichText::new("提示: 您可以随时在「设置」中修改配置").size(12.0).color(style::TEXT_SECONDARY));
+                });
+            return;
+        }
         
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.visuals_mut().widgets.noninteractive.bg_fill = style::BG_COLOR;

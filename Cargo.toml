@@ -18,7 +18,14 @@ dirs = "5"
 rfd = "0.13"
 open = "5"
 base64 = "0.22"
+image = "0.24"
+
+[build-dependencies]
+winres = "0.1"
 
 [profile.release]
-opt-level = 2
+opt-level = "z"
 lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
