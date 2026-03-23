@@ -610,6 +610,128 @@ impl eframe::App for TtsApp {
                     });
                 });
                 
+                el_card_full_width(ui, |ui| {
+                    el_section_title(ui, "软件说明");
+                    
+                    ui.label(egui::RichText::new("语音整体风格控制")
+                        .size(14.0)
+                        .color(style::TEXT_PRIMARY)
+                        .strong());
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.label(egui::RichText::new("将 <style>style</style> 置于转换目标文本开头，其中 style 为需要生成的音频风格。如需设置多种风格，请将多个风格名称置于同一个 <style> 标签内，分隔符不限。")
+                        .size(13.0)
+                        .color(style::TEXT_SECONDARY));
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.horizontal(|ui| {
+                        ui.label(egui::RichText::new("格式示例：").size(13.0).color(style::TEXT_PRIMARY));
+                        ui.label(egui::RichText::new("<style>风格1 风格2</style>待合成内容")
+                            .size(13.0)
+                            .color(style::PRIMARY)
+                            .code());
+                    });
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.label(egui::RichText::new("以下是一些推荐使用的风格，支持使用不在列表中的风格。")
+                        .size(13.0)
+                        .color(style::TEXT_SECONDARY));
+                    
+                    ui.add_space(8.0);
+                    
+                    egui::Grid::new("style_grid")
+                        .num_columns(2)
+                        .spacing([16.0, 6.0])
+                        .show(ui, |ui| {
+                            ui.label(egui::RichText::new("风格类型").size(13.0).color(style::TEXT_PRIMARY).strong());
+                            ui.label(egui::RichText::new("风格示例").size(13.0).color(style::TEXT_PRIMARY).strong());
+                            ui.end_row();
+                            
+                            ui.label(egui::RichText::new("语速控制").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.label(egui::RichText::new("变快/变慢").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.end_row();
+                            
+                            ui.label(egui::RichText::new("情绪变化").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.label(egui::RichText::new("开心/悲伤/生气").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.end_row();
+                            
+                            ui.label(egui::RichText::new("角色扮演").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.label(egui::RichText::new("孙悟空/林黛玉").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.end_row();
+                            
+                            ui.label(egui::RichText::new("风格变化").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.label(egui::RichText::new("悄悄话/夹子音/台湾腔").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.end_row();
+                            
+                            ui.label(egui::RichText::new("方言").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.label(egui::RichText::new("东北话/四川话/河南话/粤语").size(13.0).color(style::TEXT_SECONDARY));
+                            ui.end_row();
+                        });
+                    
+                    ui.add_space(12.0);
+                    
+                    ui.label(egui::RichText::new("样例：").size(13.0).color(style::TEXT_PRIMARY).strong());
+                    ui.add_space(6.0);
+                    
+                    let examples = [
+                        "<style>开心</style>明天就是周五了，真开心！",
+                        "<style>东北话</style>哎呀妈呀，这天儿也忒冷了吧！",
+                        "<style>粤语</style>呢个真係好正啊！食过一次就唔会忘记！",
+                        "<style>唱歌</style>原谅我这一生不羁放纵爱自由...",
+                    ];
+                    
+                    for ex in examples {
+                        egui::Frame::none()
+                            .fill(egui::Color32::from_rgb(245, 247, 250))
+                            .rounding(4.0)
+                            .inner_margin(egui::vec2(10.0, 6.0))
+                            .show(ui, |ui| {
+                                ui.label(egui::RichText::new(ex).size(12.0).color(style::TEXT_PRIMARY));
+                            });
+                        ui.add_space(4.0);
+                    }
+                    
+                    ui.add_space(16.0);
+                    
+                    ui.label(egui::RichText::new("音频标签细粒度控制")
+                        .size(14.0)
+                        .color(style::TEXT_PRIMARY)
+                        .strong());
+                    
+                    ui.add_space(8.0);
+                    
+                    ui.label(egui::RichText::new("通过 [音频标签]，你可以对声音进行细粒度控制，精准调节语气、情绪和表达风格——无论是低声耳语、放声大笑，还是带点小情绪的小吐槽，也可以灵活插入呼吸声、停顿、咳嗽等，都能轻松实现。")
+                        .size(13.0)
+                        .color(style::TEXT_SECONDARY));
+                    
+                    ui.add_space(12.0);
+                    
+                    ui.label(egui::RichText::new("样例：").size(13.0).color(style::TEXT_PRIMARY).strong());
+                    ui.add_space(6.0);
+                    
+                    let fine_examples = [
+                        "（紧张，深呼吸）呼……冷静，冷静。不就是一个面试吗……",
+                        "（极其疲惫，有气无力）师傅……到地方了叫我一声……",
+                        "如果我当时……（沉默片刻）哪怕再坚持一秒钟……",
+                        "（寒冷导致的急促呼吸）呼——呼——这、这大兴安岭的雪……",
+                        "（提高音量喊话）大姐！这鱼新鲜着呢！",
+                    ];
+                    
+                    for ex in fine_examples {
+                        egui::Frame::none()
+                            .fill(egui::Color32::from_rgb(245, 247, 250))
+                            .rounding(4.0)
+                            .inner_margin(egui::vec2(10.0, 6.0))
+                            .show(ui, |ui| {
+                                ui.label(egui::RichText::new(ex).size(12.0).color(style::TEXT_PRIMARY));
+                            });
+                        ui.add_space(4.0);
+                    }
+                });
+                
                 ui.add_space(20.0);
             });
         });
